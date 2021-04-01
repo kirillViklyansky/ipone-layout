@@ -168,26 +168,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderCrossSell = () => {
         const crossSellList = document.querySelector('.cross-sell__list');
-        crossSellList.style.maxheight = `400px`;
+        const crossSellAdd = document.querySelector('.cross-sell_add');
+        const allGoods = []; 
+        const shuffle = arr => arr.sort(()=> Math.random() - 0.5);
 
         const createCrossSellItem = (good) =>{
+
+            const { photo: picture, name, price } = good;
+
             const liItem = document.createElement('li');
             liItem.innerHTML = `
                 <article class="cross-sell__item">
-                    <img class="cross-sell__image" src="${good.photo}" alt="${good.name}">
-                    <h3 class="cross-sell__title">${good.name}</h3>
-                    <p class="cross-sell__price">${good.price}₽</p>
+                    <img class="cross-sell__image" src="${picture}" alt="${name}">
+                    <h3 class="cross-sell__title">${name}</h3>
+                    <p class="cross-sell__price">${price}₽</p>
                     <div class="button button_buy cross-sell__button">Купить</div>
                 </article>
             `;
             return liItem;
-        }
+        };
 
-        const createCrossSellList = (goods) => {
-            goods.forEach(item =>{
+        const render = arr => {
+            arr.forEach(item =>{
                 crossSellList.append(createCrossSellItem(item));
             });
-        }
+        };
+
+        const createCrossSellList = (goods = []) => {
+            allGoods.push(...shuffle(goods));
+            const fourItems = allGoods.splice(0, 4);
+            console.log(allGoods.splice(0, 4));
+            render(fourItems);
+        };
+
+        crossSellAdd.addEventListener('click', () => {
+            render(allGoods);
+            crossSellAdd.remove();
+        })
 
         getData('cross-sell-dbase/dbase.json', createCrossSellList);
     }
